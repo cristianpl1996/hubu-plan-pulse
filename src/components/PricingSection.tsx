@@ -43,6 +43,9 @@ const PricingSection = () => {
                 </div>
               </div>
             </div>
+            <div className="mt-6 text-center text-lg text-foreground font-medium">
+              Una recepcionista cuesta $1,200/mes. Con Hubu, automatizas desde $50.
+            </div>
           </div>
         </div>
 
@@ -59,6 +62,9 @@ const PricingSection = () => {
                   <MessageCircle className="w-6 h-6 text-primary" />
                   Plan Básico
                 </h3>
+                <p className="text-sm text-muted-foreground mb-3 italic">
+                  Empieza a automatizar sin complicaciones.
+                </p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-bold text-foreground">$50</span>
                   <span className="text-muted-foreground">USD/mes</span>
@@ -98,7 +104,7 @@ const PricingSection = () => {
                   Activar Plan Básico
                 </Button>
                 <div className="text-center text-sm text-muted-foreground">
-                  Configuración inicial: $100 USD (único)
+                  💡 Configuración inicial: $100 USD (único, sin costos ocultos)
                 </div>
               </div>
             </div>
@@ -120,6 +126,9 @@ const PricingSection = () => {
                   <Phone className="w-6 h-6 text-primary" />
                   Plan Completo
                 </h3>
+                <p className="text-sm text-muted-foreground mb-3 italic">
+                  Tu asistente 24/7 que nunca deja un cliente sin respuesta.
+                </p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">$155</span>
                   <span className="text-muted-foreground">USD/mes</span>
@@ -156,10 +165,10 @@ const PricingSection = () => {
 
               <div className="space-y-4">
                 <Button className="w-full h-14 text-lg bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105">
-                  Quiero el Plan Completo 🚀
+                  Quiero el Plan Completo ⚡
                 </Button>
                 <div className="text-center text-sm text-muted-foreground">
-                  Configuración inicial: $100 USD (único)
+                  💡 Configuración inicial: $100 USD (único, sin costos ocultos)
                 </div>
               </div>
             </div>
@@ -181,6 +190,9 @@ const PricingSection = () => {
                   <span className="text-2xl">🔮</span>
                   Plan Avanzado
                 </h3>
+                <p className="text-sm text-muted-foreground mb-3 italic">
+                  Convierte tus conversaciones en decisiones con analítica inteligente.
+                </p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">$350</span>
                   <span className="text-muted-foreground">USD/mes</span>
@@ -188,31 +200,31 @@ const PricingSection = () => {
               </div>
 
               <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/40">
-                <div className="text-sm text-foreground font-semibold mb-2">Canales: WhatsApp + Llamadas + Voz + Panel analítico</div>
+                <div className="text-sm text-foreground font-semibold mb-2">Canales: WhatsApp + Llamadas + Voz + Panel Analítico</div>
                 <div className="text-sm text-muted-foreground">Todo lo anterior +</div>
               </div>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">Analítica de datos avanzada</span>
-                </div>
-                <div className="flex items-start gap-2 pl-7">
-                  <span className="text-sm text-muted-foreground">Rendimiento, tiempos de respuesta, satisfacción, conversión por canal</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">Dashboards automáticos</span>
-                </div>
-                <div className="flex items-start gap-2 pl-7">
-                  <span className="text-sm text-muted-foreground">Métricas de atención y ventas en tiempo real</span>
+                  <span className="text-lg flex-shrink-0">📊</span>
+                  <div>
+                    <div className="text-foreground font-semibold">Analítica de datos avanzada</div>
+                    <div className="text-sm text-muted-foreground">Rendimiento, tiempos de respuesta, satisfacción y conversión.</div>
+                  </div>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">Reportes mensuales con IA</span>
+                  <span className="text-lg flex-shrink-0">📈</span>
+                  <div>
+                    <div className="text-foreground font-semibold">Paneles automáticos de control</div>
+                    <div className="text-sm text-muted-foreground">Métricas de atención y ventas en tiempo real.</div>
+                  </div>
                 </div>
-                <div className="flex items-start gap-2 pl-7">
-                  <span className="text-sm text-muted-foreground">Tendencias, recomendaciones y predicciones</span>
+                <div className="flex items-start gap-2">
+                  <span className="text-lg flex-shrink-0">🧠</span>
+                  <div>
+                    <div className="text-foreground font-semibold">Reportes mensuales con IA</div>
+                    <div className="text-sm text-muted-foreground">Tendencias, recomendaciones y predicciones.</div>
+                  </div>
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
@@ -220,7 +232,7 @@ const PricingSection = () => {
                 </div>
                 <div className="flex items-start gap-2">
                   <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">1,000 minutos de voz incluidos</span>
+                  <span className="text-foreground font-semibold">1,000 min de voz incluidos</span>
                 </div>
               </div>
 
@@ -229,7 +241,7 @@ const PricingSection = () => {
                   Quiero el Plan Avanzado 💎
                 </Button>
                 <div className="text-center text-sm text-primary font-medium">
-                  Configuración inicial: incluida ✅
+                  💎 Configuración inicial: incluida (valor $100 USD)
                 </div>
               </div>
             </div>
@@ -262,6 +274,9 @@ const PricingSection = () => {
           >
             Agenda una demostración y prueba tu agente en vivo
           </Button>
+          <p className="mt-4 text-sm text-muted-foreground">
+            Sin compromiso. Configuración en menos de 48h.
+          </p>
         </div>
       </div>
     </section>
