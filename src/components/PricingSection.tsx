@@ -1,7 +1,16 @@
 import { Check, Sparkles, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { CheckoutModal } from "./CheckoutModal";
 
 const PricingSection = () => {
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
+
+  const openCheckout = (name: string, price: string) => {
+    setSelectedPlan({ name, price });
+    setCheckoutOpen(true);
+  };
   return (
     <section className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
@@ -100,7 +109,11 @@ const PricingSection = () => {
               </div>
 
               <div className="space-y-3">
-                <Button variant="outline" className="w-full h-11 text-base rounded-xl">
+                <Button 
+                  variant="outline" 
+                  className="w-full h-11 text-base rounded-xl"
+                  onClick={() => openCheckout("Plan Básico", "$50 USD/mes")}
+                >
                   Activar Plan Básico
                 </Button>
                 <div className="text-center text-xs text-muted-foreground">
@@ -158,7 +171,10 @@ const PricingSection = () => {
               </div>
 
               <div className="space-y-3">
-                <Button className="w-full h-12 text-base rounded-xl bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105">
+                <Button 
+                  className="w-full h-12 text-base rounded-xl bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105"
+                  onClick={() => openCheckout("Plan Completo", "$155 USD/mes")}
+                >
                   Quiero el Plan Completo ⚡
                 </Button>
                 <div className="text-center text-xs text-muted-foreground">
@@ -216,7 +232,10 @@ const PricingSection = () => {
               </div>
 
               <div className="space-y-3">
-                <Button className="w-full h-12 text-base rounded-xl bg-gradient-to-r from-primary via-secondary to-primary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105 animate-glow-pulse">
+                <Button 
+                  className="w-full h-12 text-base rounded-xl bg-gradient-to-r from-primary via-secondary to-primary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105 animate-glow-pulse"
+                  onClick={() => openCheckout("Plan Avanzado", "$350 USD/mes")}
+                >
                   Quiero el Plan Avanzado 💎
                 </Button>
                 <div className="text-center text-xs text-primary font-medium">
@@ -254,10 +273,17 @@ const PricingSection = () => {
             Agenda una demostración y prueba tu agente en vivo
           </Button>
           <p className="mt-4 text-sm text-muted-foreground">
-            Sin compromiso. Configuración en menos de 48h.
+          Sin compromiso. Configuración en menos de 48h.
           </p>
         </div>
       </div>
+
+      <CheckoutModal
+        open={checkoutOpen}
+        onOpenChange={setCheckoutOpen}
+        planName={selectedPlan.name}
+        planPrice={selectedPlan.price}
+      />
     </section>
   );
 };
