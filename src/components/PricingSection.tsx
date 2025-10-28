@@ -16,46 +16,15 @@ const PricingSection = () => {
       <div className="max-w-7xl mx-auto">
         {/* BLOQUE 1 - INTRODUCCIÓN */}
         <div className="text-center mb-16 animate-fade-in-up">
+          <p className="text-sm text-muted-foreground mb-6">
+            💡 Ahorra hasta <span className="font-semibold">87% mensual</span> frente a una recepcionista tradicional.
+          </p>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
             Elige tu agente inteligente
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Activa el plan que se adapta a tu clínica, petshop o guardería y atiende a todos tus tutores sin perder oportunidades.
+            Activa el plan que se adapta a tu clínica, petshop o guardería y realiza tu pago seguro para comenzar.
           </p>
-        </div>
-
-        {/* BLOQUE 2 - ANCLAJE DE VALOR */}
-        <div className="mb-20 animate-fade-in-up" style={{ animationDelay: "0.1s" }}>
-          <div className="bg-muted/50 backdrop-blur-sm rounded-2xl p-6 border border-border">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-background/50">
-                <span className="text-3xl">💸</span>
-                <div>
-                  <div className="font-semibold text-foreground mb-1">Recepcionista tradicional</div>
-                  <div className="text-sm text-muted-foreground">$1,200/mes · 8h/día · 1 cliente a la vez</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-background/50">
-                <span className="text-3xl">💬</span>
-                <div>
-                  <div className="font-semibold text-foreground mb-1">Hubu Plan Básico</div>
-                  <div className="text-sm text-muted-foreground">$50/mes · WhatsApp 24/7</div>
-                </div>
-              </div>
-              
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-background/50 border border-primary/30">
-                <span className="text-3xl">🧠</span>
-                <div>
-                  <div className="font-semibold text-primary mb-1">Hubu Plan Completo</div>
-                  <div className="text-sm text-muted-foreground">$155/mes · WhatsApp + Llamadas + Agenda automática</div>
-                </div>
-              </div>
-            </div>
-            <div className="mt-6 text-center text-lg text-foreground font-medium">
-              Una recepcionista cuesta $1,200/mes. Con Hubu, automatizas desde $50.
-            </div>
-          </div>
         </div>
 
         {/* BLOQUE 3 - PLANES */}
