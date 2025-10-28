@@ -181,7 +181,7 @@ const PricingSection = () => {
               <div className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap">
                 <div className="bg-gradient-to-r from-primary via-secondary to-primary text-primary-foreground px-6 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg animate-glow-pulse">
                   <span className="text-xl">💎</span>
-                  Ideal para clínicas que quieren crecer con datos
+                  Ideal para clínicas que quieren crecer con inteligencia
                 </div>
               </div>
 
@@ -191,7 +191,7 @@ const PricingSection = () => {
                   Plan Avanzado
                 </h3>
                 <p className="text-sm text-muted-foreground mb-3 italic">
-                  Convierte tus conversaciones en decisiones con analítica inteligente.
+                  Haz que tus datos trabajen por ti.
                 </p>
                 <div className="flex items-baseline gap-2">
                   <span className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">$350</span>
@@ -200,39 +200,30 @@ const PricingSection = () => {
               </div>
 
               <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/40">
-                <div className="text-sm text-foreground font-semibold mb-2">Canales: WhatsApp + Llamadas + Voz + Panel Analítico</div>
+                <div className="text-sm text-foreground font-semibold mb-2">Canales: WhatsApp + Llamadas + Voz + Panel de datos</div>
                 <div className="text-sm text-muted-foreground">Todo lo anterior +</div>
               </div>
 
               <div className="space-y-4 mb-8">
                 <div className="flex items-start gap-2">
+                  <span className="text-lg flex-shrink-0">🔗</span>
+                  <span className="text-foreground font-semibold">Integración de sistemas y clientes</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-lg flex-shrink-0">🧹</span>
+                  <span className="text-foreground font-semibold">Limpieza y organización automática de datos</span>
+                </div>
+                <div className="flex items-start gap-2">
                   <span className="text-lg flex-shrink-0">📊</span>
-                  <div>
-                    <div className="text-foreground font-semibold">Analítica de datos avanzada</div>
-                    <div className="text-sm text-muted-foreground">Rendimiento, tiempos de respuesta, satisfacción y conversión.</div>
-                  </div>
+                  <span className="text-foreground font-semibold">Segmentación y predicción con IA</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">📈</span>
-                  <div>
-                    <div className="text-foreground font-semibold">Paneles automáticos de control</div>
-                    <div className="text-sm text-muted-foreground">Métricas de atención y ventas en tiempo real.</div>
-                  </div>
+                  <span className="text-lg flex-shrink-0">💬</span>
+                  <span className="text-foreground font-semibold">Campañas automáticas y personalizadas</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">🧠</span>
-                  <div>
-                    <div className="text-foreground font-semibold">Reportes mensuales con IA</div>
-                    <div className="text-sm text-muted-foreground">Tendencias, recomendaciones y predicciones.</div>
-                  </div>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">Soporte dedicado 1:1</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">1,000 min de voz incluidos</span>
+                  <span className="text-lg flex-shrink-0">🎧</span>
+                  <span className="text-foreground font-semibold">750 min de voz al mes + soporte 1:1</span>
                 </div>
               </div>
 
