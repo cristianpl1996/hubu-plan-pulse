@@ -53,8 +53,8 @@ const PricingSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 max-w-7xl mx-auto">
           {/* Plan Básico */}
           <div className="relative animate-scale-in" style={{ animationDelay: "0.2s" }}>
-            <div className="h-full bg-card backdrop-blur-sm rounded-2xl p-8 border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
-              <div className="mb-6">
+            <div className="h-full bg-card backdrop-blur-sm rounded-2xl p-6 border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
+              <div className="mb-5">
                 <div className="inline-block px-4 py-1 bg-muted rounded-full text-sm text-muted-foreground mb-4">
                   Ideal para negocios pequeños
                 </div>
@@ -66,44 +66,44 @@ const PricingSection = () => {
                   Empieza a automatizar sin complicaciones.
                 </p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold text-foreground">$50</span>
-                  <span className="text-muted-foreground">USD/mes</span>
+                  <span className="text-4xl font-bold text-foreground">$50</span>
+                  <span className="text-sm text-muted-foreground">USD/mes</span>
                 </div>
               </div>
 
-              <div className="mb-4 p-3 bg-muted/30 rounded-lg">
+              <div className="mb-3 p-3 bg-muted/30 rounded-lg">
                 <div className="text-sm text-muted-foreground font-medium">Canales: WhatsApp</div>
               </div>
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-3 mb-6">
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">Respuestas automáticas 24/7</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">Info de productos y servicios</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground">Respuestas automáticas 24/7</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">Promociones, horarios y ubicación</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground">Info de productos y servicios</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground">Promociones, horarios y ubicación</span>
                 </div>
                 <div className="flex items-start gap-2 opacity-50">
-                  <span className="text-muted-foreground line-through">Agendamiento</span>
+                  <span className="text-sm text-muted-foreground line-through">Agendamiento</span>
                 </div>
                 <div className="flex items-start gap-2 opacity-50">
-                  <span className="text-muted-foreground line-through">Recordatorios</span>
+                  <span className="text-sm text-muted-foreground line-through">Recordatorios</span>
                 </div>
                 <div className="flex items-start gap-2 opacity-50">
-                  <span className="text-muted-foreground line-through">Llamadas</span>
+                  <span className="text-sm text-muted-foreground line-through">Llamadas</span>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <Button variant="outline" className="w-full h-12 text-base">
+              <div className="space-y-3">
+                <Button variant="outline" className="w-full h-11 text-base rounded-xl">
                   Activar Plan Básico
                 </Button>
-                <div className="text-center text-sm text-muted-foreground">
+                <div className="text-center text-xs text-muted-foreground">
                   💡 Configuración inicial: $100 USD (único, sin costos ocultos)
                 </div>
               </div>
@@ -113,15 +113,9 @@ const PricingSection = () => {
           {/* Plan Completo - DESTACADO */}
           <div className="relative animate-scale-in" style={{ animationDelay: "0.3s" }}>
             <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl opacity-75 blur-xl animate-glow-pulse"></div>
-            <div className="relative h-full bg-card backdrop-blur-sm rounded-2xl p-8 border-2 border-primary shadow-2xl transform lg:scale-105">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <div className="bg-gradient-to-r from-primary to-secondary text-primary-foreground px-6 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg">
-                  <Sparkles className="w-4 h-4" />
-                  Más elegido por clínicas
-                </div>
-              </div>
-
-              <div className="mb-6 mt-4">
+            <div className="relative h-full bg-card backdrop-blur-sm rounded-2xl p-6 border-2 border-primary shadow-2xl transform lg:scale-105">
+...
+              <div className="mb-5 mt-4">
                 <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
                   <Phone className="w-6 h-6 text-primary" />
                   Plan Completo
@@ -130,44 +124,44 @@ const PricingSection = () => {
                   Tu asistente 24/7 que nunca deja un cliente sin respuesta.
                 </p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">$155</span>
-                  <span className="text-muted-foreground">USD/mes</span>
+                  <span className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">$155</span>
+                  <span className="text-sm text-muted-foreground">USD/mes</span>
                 </div>
               </div>
 
-              <div className="mb-6 p-4 bg-primary/10 rounded-xl border border-primary/30">
+              <div className="mb-4 p-3 bg-primary/10 rounded-xl border border-primary/30">
                 <div className="text-sm text-foreground font-semibold mb-2">Canales: WhatsApp + Llamadas</div>
                 <div className="text-sm text-muted-foreground">Todo lo anterior +</div>
               </div>
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-3 mb-6">
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">Agendamiento automático</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground font-semibold">Agendamiento automático</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">Recordatorios automáticos</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground font-semibold">Recordatorios automáticos</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground font-semibold">Agente de voz (300 min incluidos)</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground font-semibold">Agente de voz (300 min incluidos)</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">Integración con tus sistemas</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground">Integración con tus sistemas</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <Check className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-foreground">Soporte prioritario</span>
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                  <span className="text-sm text-foreground">Soporte prioritario</span>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <Button className="w-full h-14 text-lg bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105">
+              <div className="space-y-3">
+                <Button className="w-full h-12 text-base rounded-xl bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105">
                   Quiero el Plan Completo ⚡
                 </Button>
-                <div className="text-center text-sm text-muted-foreground">
+                <div className="text-center text-xs text-muted-foreground">
                   💡 Configuración inicial: $100 USD (único, sin costos ocultos)
                 </div>
               </div>
@@ -177,15 +171,9 @@ const PricingSection = () => {
           {/* Plan Avanzado - ANCLA PREMIUM */}
           <div className="relative animate-scale-in" style={{ animationDelay: "0.4s" }}>
             <div className="absolute -inset-1 bg-gradient-to-br from-primary via-secondary to-primary rounded-2xl opacity-60 blur-2xl"></div>
-            <div className="relative h-full bg-card backdrop-blur-sm rounded-2xl p-8 border-2 border-primary/50 shadow-xl transition-all duration-300 hover:border-primary hover:shadow-2xl">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                <div className="bg-gradient-to-r from-primary via-secondary to-primary text-primary-foreground px-6 py-2 rounded-full text-sm font-semibold flex items-center gap-2 shadow-lg animate-glow-pulse">
-                  <span className="text-xl">💎</span>
-                  Ideal para clínicas que quieren crecer con inteligencia
-                </div>
-              </div>
-
-              <div className="mb-6 mt-4">
+            <div className="relative h-full bg-card backdrop-blur-sm rounded-2xl p-6 border-2 border-primary/50 shadow-xl transition-all duration-300 hover:border-primary hover:shadow-2xl">
+...
+              <div className="mb-5 mt-4">
                 <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
                   <span className="text-2xl">🔮</span>
                   Plan Avanzado
@@ -194,44 +182,44 @@ const PricingSection = () => {
                   Haz que tus datos trabajen por ti.
                 </p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-5xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">$350</span>
-                  <span className="text-muted-foreground">USD/mes</span>
+                  <span className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">$350</span>
+                  <span className="text-sm text-muted-foreground">USD/mes</span>
                 </div>
               </div>
 
-              <div className="mb-6 p-4 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/40">
+              <div className="mb-4 p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/40">
                 <div className="text-sm text-foreground font-semibold mb-2">Canales: WhatsApp + Llamadas + Voz + Panel de datos</div>
                 <div className="text-sm text-muted-foreground">Todo lo anterior +</div>
               </div>
 
-              <div className="space-y-4 mb-8">
+              <div className="space-y-3 mb-6">
                 <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">🔗</span>
-                  <span className="text-foreground font-semibold">Integración de sistemas y clientes</span>
+                  <span className="text-base flex-shrink-0">🔗</span>
+                  <span className="text-sm text-foreground font-semibold">Integración de sistemas y clientes</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">🧹</span>
-                  <span className="text-foreground font-semibold">Limpieza y organización automática de datos</span>
+                  <span className="text-base flex-shrink-0">🧹</span>
+                  <span className="text-sm text-foreground font-semibold">Limpieza y organización automática de datos</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">📊</span>
-                  <span className="text-foreground font-semibold">Segmentación y predicción con IA</span>
+                  <span className="text-base flex-shrink-0">📊</span>
+                  <span className="text-sm text-foreground font-semibold">Segmentación y predicción con IA</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">💬</span>
-                  <span className="text-foreground font-semibold">Campañas automáticas y personalizadas</span>
+                  <span className="text-base flex-shrink-0">💬</span>
+                  <span className="text-sm text-foreground font-semibold">Campañas automáticas y personalizadas</span>
                 </div>
                 <div className="flex items-start gap-2">
-                  <span className="text-lg flex-shrink-0">🎧</span>
-                  <span className="text-foreground font-semibold">750 min de voz al mes + soporte 1:1</span>
+                  <span className="text-base flex-shrink-0">🎧</span>
+                  <span className="text-sm text-foreground font-semibold">750 min de voz al mes + soporte 1:1</span>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                <Button className="w-full h-14 text-lg bg-gradient-to-r from-primary via-secondary to-primary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105 animate-glow-pulse">
+              <div className="space-y-3">
+                <Button className="w-full h-12 text-base rounded-xl bg-gradient-to-r from-primary via-secondary to-primary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105 animate-glow-pulse">
                   Quiero el Plan Avanzado 💎
                 </Button>
-                <div className="text-center text-sm text-primary font-medium">
+                <div className="text-center text-xs text-primary font-medium">
                   💎 Configuración inicial: incluida (valor $100 USD)
                 </div>
               </div>
@@ -261,7 +249,7 @@ const PricingSection = () => {
         <div className="text-center animate-fade-in-up" style={{ animationDelay: "0.6s" }}>
           <Button 
             size="lg" 
-            className="h-16 px-12 text-lg bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105"
+            className="h-14 px-12 text-base rounded-2xl bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105"
           >
             Agenda una demostración y prueba tu agente en vivo
           </Button>
