@@ -339,7 +339,20 @@ const PricingSection = () => {
       const planId = String((p.id_url ?? "")).toLowerCase();
       return planId && planId === activeUrlId;
     });
-    return filtered.length > 0 ? filtered : null;
+    if (filtered.length === 0) return null;
+    const parsePriceToNumber = (price: string): number => {
+      // Extrae dígitos, puntos y comas, luego normaliza a número
+      const cleaned = price
+        .toString()
+        .replace(/[^0-9.,-]/g, "")
+        .replace(/,(?=\d{3}(\D|$))/g, "") // elimina separadores de miles con coma
+        .replace(/\.(?=\d{3}(\D|$))/g, ""); // elimina separadores de miles con punto
+      const normalized = cleaned.replace(",", ".");
+      const n = parseFloat(normalized);
+      return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
+    };
+    const sorted = [...filtered].sort((a, b) => parsePriceToNumber(a.price) - parsePriceToNumber(b.price));
+    return sorted;
   }, [activeUrlId, plans]);
 
   const openCheckout = (name: string, price: string) => {
