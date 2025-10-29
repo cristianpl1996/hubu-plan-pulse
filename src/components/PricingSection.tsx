@@ -1,12 +1,13 @@
 import { Check, Sparkles, Phone, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CheckoutModal } from "./CheckoutModal";
 
 // Datos de los planes de precios
 const pricingPlans = [
   {
     id: "basico",
+    id_url: "1",
     name: "Plan básico",
     description: "Empieza a automatizar sin complicaciones.",
     price: "$100",
@@ -30,6 +31,7 @@ const pricingPlans = [
   },
   {
     id: "completo",
+    id_url: "1",
     name: "Plan completo",
     description: "Tu asistente 24/7 que nunca deja un cliente sin respuesta.",
     price: "$155",
@@ -57,6 +59,7 @@ const pricingPlans = [
   },
   {
     id: "avanzado",
+    id_url: "1",
     name: "Plan avanzado",
     description: "Haz que tus datos trabajen por ti.",
     price: "$350",
@@ -97,6 +100,8 @@ const pricingPlans = [
   },
 ];
 
+// Los planes se filtrarán dinámicamente por el campo id_url presente en cada plan
+
 // Componente para renderizar una card de precio individual
 const PricingCard = ({
   plan,
@@ -109,7 +114,7 @@ const PricingCard = ({
 
   return (
     <div
-      className="relative animate-scale-in"
+      className="relative animate-scale-in w-full sm:w-[360px] md:w-[380px]"
       style={{ animationDelay: plan.animationDelay }}
     >
       {/* Efectos de fondo para planes destacados */}
@@ -262,6 +267,42 @@ const PricingCard = ({
 const PricingSection = () => {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
+  const [activeUrlId, setActiveUrlId] = useState<string | null>(null);
+
+  // Lee el id desde la URL: usa ?id=... o el último segmento de la ruta
+  const readIdFromUrl = () => {
+    try {
+      const url = new URL(window.location.href);
+      const queryId = url.searchParams.get("id");
+      if (queryId) return queryId.toLowerCase();
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+      const lastSegment = pathParts[pathParts.length - 1];
+      return lastSegment ? lastSegment.toLowerCase() : null;
+    } catch {
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    const applyId = () => setActiveUrlId(readIdFromUrl());
+    applyId();
+    // Escucha cambios de historial/navegación para actualizar dinámicamente
+    window.addEventListener("popstate", applyId);
+    window.addEventListener("hashchange", applyId);
+    return () => {
+      window.removeEventListener("popstate", applyId);
+      window.removeEventListener("hashchange", applyId);
+    };
+  }, []);
+
+  const plansToRender = useMemo(() => {
+    if (!activeUrlId) return null; // id obligatorio
+    const filtered = pricingPlans.filter((p) => {
+      const planId = String((p as { id_url?: string | number }).id_url ?? "").toLowerCase();
+      return planId && planId === activeUrlId;
+    });
+    return filtered.length > 0 ? filtered : null;
+  }, [activeUrlId]);
 
   const openCheckout = (name: string, price: string) => {
     setSelectedPlan({ name, price });
@@ -290,16 +331,29 @@ const PricingSection = () => {
           </p>
         </div>
 
-        {/* BLOQUE 3 - PLANES */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 max-w-7xl mx-auto">
-          {pricingPlans.map((plan) => (
-            <PricingCard
-              key={plan.id}
-              plan={plan}
-              onSelectPlan={openCheckout}
-            />
-          ))}
-        </div>
+        {/* BLOQUE 3 - PLANES o NOT FOUND */}
+        {plansToRender ? (
+          <div className="flex flex-wrap justify-center gap-8 mb-20 max-w-7xl mx-auto">
+            {plansToRender.map((plan) => (
+              <PricingCard
+                key={plan.id}
+                plan={plan}
+                onSelectPlan={openCheckout}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="mb-20 max-w-3xl mx-auto">
+            <div className="bg-muted/30 backdrop-blur-sm rounded-2xl p-8 border border-border text-center">
+              <h3 className="text-2xl font-semibold text-foreground mb-2">
+                No encontramos planes para este enlace
+              </h3>
+              <p className="text-muted-foreground">
+                Asegúrate de usar una URL válida con un identificador.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* BLOQUE 4 - TESTIMONIO Y REASEGURO */}
         <div

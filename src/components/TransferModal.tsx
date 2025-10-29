@@ -47,10 +47,10 @@ export function TransferModal({
 
   const bankInfo = {
     bank: "Bancolombia",
-    accountType: "Corriente",
-    accountNumber: "123-456789-01",
-    holder: "OSYVA SAS",
-    nit: "901.000.111-2",
+    accountType: "Cuenta de ahorros",
+    accountNumber: "270-000012-12",
+    holder: "CRISTIAN PATIÑO - OSYVA SAS",
+    nit: "1088.334.538",
   };
 
   return (
