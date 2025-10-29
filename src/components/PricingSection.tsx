@@ -9,7 +9,7 @@ const pricingPlans = [
     id: "basico",
     name: "Plan básico",
     description: "Empieza a automatizar sin complicaciones.",
-    price: "$50",
+    price: "$100",
     period: "USD/mes",
     icon: MessageCircle,
     badge: "Ideal para negocios pequeños",
