@@ -12,11 +12,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <img 
-              src="/logo.png" 
-              alt="Hubu Logo" 
-              className="h-14 w-auto mb-2"
-            />
+            <img src="/logo.png" alt="Hubu Logo" className="h-14 w-auto mb-2" />
           </div>
 
           {/* Botón Volver */}
@@ -24,8 +20,10 @@ const Header = () => {
             onClick={handleVolverClick}
             className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white px-6 rounded-sm transition-all duration-300"
           >
-            <ArrowLeft/>
-            <span className="font-bold" style={{ fontSize: '16px' }}>Volver</span>
+            <ArrowLeft />
+            <span className="font-bold" style={{ fontSize: "16px" }}>
+              Volver
+            </span>
           </Button>
         </div>
       </div>
