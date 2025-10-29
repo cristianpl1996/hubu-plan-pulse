@@ -1,113 +1,43 @@
-import { Check, Sparkles, Phone, MessageCircle } from "lucide-react";
+import { Check, Sparkles, Phone, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ComponentType } from "react";
 import { CheckoutModal } from "./CheckoutModal";
 
-// Datos de los planes de precios
-const pricingPlans = [
-  {
-    id: "basico",
-    id_url: "1",
-    name: "Plan básico",
-    description: "Empieza a automatizar sin complicaciones.",
-    price: "$100",
-    period: "USD/mes",
-    icon: MessageCircle,
-    badge: "Ideal para negocios pequeños",
-    channels: "WhatsApp",
-    features: [
-      { text: "Respuestas automáticas 24/7", included: true },
-      { text: "Info de productos y servicios", included: true },
-      { text: "Promociones, horarios y ubicación", included: true },
-      { text: "Agendamiento", included: false },
-      { text: "Recordatorios", included: false },
-      { text: "Llamadas", included: false },
-    ],
-    buttonText: "Activar plan básico",
-    buttonVariant: "outline" as const,
-    setupCost: "$100 USD (único, sin costos ocultos)",
-    animationDelay: "0.2s",
-    isHighlighted: false,
-  },
-  {
-    id: "completo",
-    id_url: "1",
-    name: "Plan completo",
-    description: "Tu asistente 24/7 que nunca deja un cliente sin respuesta.",
-    price: "$155",
-    period: "USD/mes",
-    icon: Phone,
-    badge: "Ideal para negocios medianos",
-    channels: "WhatsApp + Llamadas",
-    features: [
-      { text: "Agendamiento automático", included: true, highlighted: true },
-      { text: "Recordatorios automáticos", included: true, highlighted: true },
-      {
-        text: "Agente de voz (300 min incluidos)",
-        included: true,
-        highlighted: true,
-      },
-      { text: "Integración con tus sistemas", included: true },
-      { text: "Soporte prioritario", included: true },
-    ],
-    buttonText: "Quiero el plan completo",
-    buttonVariant: "default" as const,
-    setupCost: "$100 USD (único, sin costos ocultos)",
-    animationDelay: "0.3s",
-    isHighlighted: true,
-    isPopular: true,
-  },
-  {
-    id: "avanzado",
-    id_url: "1",
-    name: "Plan avanzado",
-    description: "Haz que tus datos trabajen por ti.",
-    price: "$350",
-    period: "USD/mes",
-    icon: null,
-    iconEmoji: "🔮",
-    badge: "Ideal para negocios grandes",
-    channels: "WhatsApp + Llamadas + Voz + Panel de datos",
-    features: [
-      {
-        text: "Integración de sistemas y clientes",
-        included: true,
-        emoji: "🔗",
-      },
-      {
-        text: "Limpieza y organización automática de datos",
-        included: true,
-        emoji: "🧹",
-      },
-      { text: "Segmentación y predicción con IA", included: true, emoji: "📊" },
-      {
-        text: "Campañas automáticas y personalizadas",
-        included: true,
-        emoji: "💬",
-      },
-      {
-        text: "750 min de voz al mes + soporte 1:1",
-        included: true,
-        emoji: "🎧",
-      },
-    ],
-    buttonText: "Quiero el plan avanzado",
-    buttonVariant: "default" as const,
-    setupCost: "incluida (valor $100 USD)",
-    animationDelay: "0.4s",
-    isHighlighted: true,
-    isPremium: true,
-  },
-];
+// Tipos para planes cargados dinámicamente desde Supabase
+type PricingFeature = {
+  text: string;
+  included: boolean;
+  highlighted?: boolean;
+  emoji?: string;
+};
 
-// Los planes se filtrarán dinámicamente por el campo id_url presente en cada plan
+type PricingPlan = {
+  id: string;
+  id_url?: string | number | null;
+  name: string;
+  description?: string;
+  price: string; // El API devuelve texto o número; lo normalizamos a string
+  period?: string;
+  icon?: ComponentType<{ className?: string }> | null; // opcional; mapeamos si existe
+  iconEmoji?: string;
+  badge?: string;
+  channels?: string;
+  features: PricingFeature[];
+  buttonText?: string;
+  buttonVariant?: "default" | "outline";
+  setupCost?: string;
+  animationDelay?: string;
+  isHighlighted?: boolean;
+  isPopular?: boolean;
+  isPremium?: boolean;
+};
 
 // Componente para renderizar una card de precio individual
 const PricingCard = ({
   plan,
   onSelectPlan,
 }: {
-  plan: (typeof pricingPlans)[0];
+  plan: PricingPlan;
   onSelectPlan: (name: string, price: string) => void;
 }) => {
   const IconComponent = plan.icon;
@@ -268,6 +198,9 @@ const PricingSection = () => {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
   const [activeUrlId, setActiveUrlId] = useState<string | null>(null);
+  const [plans, setPlans] = useState<PricingPlan[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Lee el id desde la URL: usa ?id=... o el último segmento de la ruta
   const readIdFromUrl = () => {
@@ -295,14 +228,119 @@ const PricingSection = () => {
     };
   }, []);
 
+  // Carga dinámica desde Supabase REST
+  useEffect(() => {
+    const controller = new AbortController();
+    const fetchPlans = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
+        const url = "https://supabase.bettercode.com.co/rest/v1/pricing_plans?select=*";
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_KEY,
+            Authorization: `Bearer ${SUPABASE_KEY}`,
+            Accept: "application/json",
+          },
+          signal: controller.signal,
+        });
+        if (!res.ok) {
+          throw new Error(`Error ${res.status}`);
+        }
+        const data = (await res.json()) as unknown[];
+        // Mapeamos defensivamente a nuestro tipo de UI (tabla devuelve un campo plan anidado)
+        const mapped: PricingPlan[] = (data as Record<string, unknown>[]).map((row, idx) => {
+          const rawPlan = (row as { plan?: unknown }).plan;
+          const planObj: Record<string, unknown> =
+            typeof rawPlan === "string"
+              ? (() => {
+                  try {
+                    const parsed = JSON.parse(rawPlan);
+                    return typeof parsed === "object" && parsed !== null ? (parsed as Record<string, unknown>) : {};
+                  } catch {
+                    return {};
+                  }
+                })()
+              : (rawPlan as Record<string, unknown>) || {};
+
+          // Iconos
+          let icon: ComponentType<{ className?: string }> | undefined = undefined;
+          const iconKey = typeof planObj.icon === "string" ? planObj.icon.toLowerCase() : "";
+          if (iconKey === "phone") icon = Phone;
+          if (iconKey === "message" || iconKey === "whatsapp" || iconKey === "messagecircle") icon = MessageCircle;
+          const emojiFromPlan = (planObj as { emoji?: unknown }).emoji;
+          const iconEmoji: string | undefined =
+            (typeof planObj.iconEmoji === "string" ? (planObj.iconEmoji as string) : undefined) ??
+            (icon ? undefined : (typeof emojiFromPlan === "string" ? (emojiFromPlan as string) : undefined));
+
+          // Features
+          const rawFeatures = (planObj as { features?: unknown }).features;
+          const features: PricingFeature[] = Array.isArray(rawFeatures)
+            ? (rawFeatures as PricingFeature[])
+            : typeof rawFeatures === "string"
+            ? (() => {
+                try {
+                  const parsed = JSON.parse(rawFeatures);
+                  return Array.isArray(parsed) ? parsed : [];
+                } catch {
+                  return [];
+                }
+              })()
+            : [];
+
+          const priceValue = (planObj as { price?: unknown }).price;
+          const price = typeof priceValue === "number" ? `$${priceValue}` : String(priceValue ?? "");
+
+          const rawIdUrl = (planObj as { id_url?: unknown }).id_url;
+          const id_url: string | number | null =
+            typeof rawIdUrl === "string" || typeof rawIdUrl === "number" ? rawIdUrl : null;
+
+          return {
+            id: String((planObj as { id?: unknown }).id ?? (row as { id?: unknown }).id ?? idx),
+            id_url,
+            name: String((planObj as { name?: unknown }).name ?? ""),
+            description: (planObj as { description?: unknown }).description as string | undefined,
+            price,
+            period: (planObj as { period?: unknown }).period as string | undefined,
+            icon,
+            iconEmoji,
+            badge: (planObj as { badge?: unknown }).badge as string | undefined,
+            channels: (planObj as { channels?: unknown }).channels as string | undefined,
+            features,
+            buttonText: ((planObj as { buttonText?: unknown }).buttonText as string | undefined) ?? "Elegir plan",
+            buttonVariant:
+              (planObj as { buttonVariant?: unknown }).buttonVariant === "outline" ? "outline" : "default",
+            setupCost: (planObj as { setupCost?: unknown }).setupCost as string | undefined,
+            animationDelay:
+              ((planObj as { animationDelay?: unknown }).animationDelay as string | undefined) ?? `${0.2 + idx * 0.1}s`,
+            isHighlighted: Boolean((planObj as { isHighlighted?: unknown }).isHighlighted),
+            isPopular: Boolean((planObj as { isPopular?: unknown }).isPopular),
+            isPremium: Boolean((planObj as { isPremium?: unknown }).isPremium),
+          };
+        });
+        setPlans(mapped);
+      } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : "No fue posible cargar los planes";
+        setError(message);
+        setPlans(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPlans();
+    return () => controller.abort();
+  }, []);
+
   const plansToRender = useMemo(() => {
-    if (!activeUrlId) return null; // id obligatorio
-    const filtered = pricingPlans.filter((p) => {
-      const planId = String((p as { id_url?: string | number }).id_url ?? "").toLowerCase();
+    if (!activeUrlId || !plans) return null; // id obligatorio y datos cargados
+    const filtered = plans.filter((p) => {
+      const planId = String((p.id_url ?? "")).toLowerCase();
       return planId && planId === activeUrlId;
     });
     return filtered.length > 0 ? filtered : null;
-  }, [activeUrlId]);
+  }, [activeUrlId, plans]);
 
   const openCheckout = (name: string, price: string) => {
     setSelectedPlan({ name, price });
@@ -331,8 +369,25 @@ const PricingSection = () => {
           </p>
         </div>
 
-        {/* BLOQUE 3 - PLANES o NOT FOUND */}
-        {plansToRender ? (
+        {/* BLOQUE 3 - PLANES / LOADING / NOT FOUND */}
+        {loading ? (
+          <div className="mb-20 max-w-3xl mx-auto">
+            <div className="bg-muted/30 backdrop-blur-sm rounded-2xl p-8 border border-border text-center">
+              <div className="flex items-center justify-center gap-3 mb-3">
+                <Loader2 className="h-6 w-6 text-primary animate-spin" />
+                <h3 className="text-2xl font-semibold text-foreground">Cargando planes…</h3>
+              </div>
+              <p className="text-muted-foreground">Espera un momento mientras obtenemos la información.</p>
+            </div>
+          </div>
+        ) : error ? (
+          <div className="mb-20 max-w-3xl mx-auto">
+            <div className="bg-muted/30 backdrop-blur-sm rounded-2xl p-8 border border-border text-center">
+              <h3 className="text-2xl font-semibold text-foreground mb-2">Hubo un problema</h3>
+              <p className="text-muted-foreground">{error}</p>
+            </div>
+          </div>
+        ) : plansToRender ? (
           <div className="flex flex-wrap justify-center gap-8 mb-20 max-w-7xl mx-auto">
             {plansToRender.map((plan) => (
               <PricingCard
@@ -346,7 +401,7 @@ const PricingSection = () => {
           <div className="mb-20 max-w-3xl mx-auto">
             <div className="bg-muted/30 backdrop-blur-sm rounded-2xl p-8 border border-border text-center">
               <h3 className="text-2xl font-semibold text-foreground mb-2">
-                No encontramos planes para este enlace
+                404 - No encontramos planes para este enlace
               </h3>
               <p className="text-muted-foreground">
                 Asegúrate de usar una URL válida con un identificador.
