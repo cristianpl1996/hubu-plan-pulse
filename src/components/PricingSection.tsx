@@ -3,6 +3,202 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { CheckoutModal } from "./CheckoutModal";
 
+// Datos de los planes de precios
+const pricingPlans = [
+  {
+    id: "basico",
+    name: "Plan básico",
+    description: "Empieza a automatizar sin complicaciones.",
+    price: "$50",
+    period: "USD/mes",
+    icon: MessageCircle,
+    badge: "Ideal para negocios pequeños",
+    channels: "WhatsApp",
+    features: [
+      { text: "Respuestas automáticas 24/7", included: true },
+      { text: "Info de productos y servicios", included: true },
+      { text: "Promociones, horarios y ubicación", included: true },
+      { text: "Agendamiento", included: false },
+      { text: "Recordatorios", included: false },
+      { text: "Llamadas", included: false }
+    ],
+    buttonText: "Activar plan básico",
+    buttonVariant: "outline" as const,
+    setupCost: "$100 USD (único, sin costos ocultos)",
+    animationDelay: "0.2s",
+    isHighlighted: false
+  },
+  {
+    id: "completo",
+    name: "Plan completo",
+    description: "Tu asistente 24/7 que nunca deja un cliente sin respuesta.",
+    price: "$155",
+    period: "USD/mes",
+    icon: Phone,
+    badge: "Ideal para negocios medianos",
+    channels: "WhatsApp + Llamadas",
+    features: [
+      { text: "Agendamiento automático", included: true, highlighted: true },
+      { text: "Recordatorios automáticos", included: true, highlighted: true },
+      { text: "Agente de voz (300 min incluidos)", included: true, highlighted: true },
+      { text: "Integración con tus sistemas", included: true },
+      { text: "Soporte prioritario", included: true }
+    ],
+    buttonText: "Quiero el plan completo",
+    buttonVariant: "default" as const,
+    setupCost: "$100 USD (único, sin costos ocultos)",
+    animationDelay: "0.3s",
+    isHighlighted: true,
+    isPopular: true
+  },
+  {
+    id: "avanzado",
+    name: "Plan avanzado",
+    description: "Haz que tus datos trabajen por ti.",
+    price: "$350",
+    period: "USD/mes",
+    icon: null,
+    iconEmoji: "🔮",
+    badge: "Ideal para negocios grandes",
+    channels: "WhatsApp + Llamadas + Voz + Panel de datos",
+    features: [
+      { text: "Integración de sistemas y clientes", included: true, emoji: "🔗" },
+      { text: "Limpieza y organización automática de datos", included: true, emoji: "🧹" },
+      { text: "Segmentación y predicción con IA", included: true, emoji: "📊" },
+      { text: "Campañas automáticas y personalizadas", included: true, emoji: "💬" },
+      { text: "750 min de voz al mes + soporte 1:1", included: true, emoji: "🎧" }
+    ],
+    buttonText: "Quiero el plan avanzado",
+    buttonVariant: "default" as const,
+    setupCost: "incluida (valor $100 USD)",
+    animationDelay: "0.4s",
+    isHighlighted: true,
+    isPremium: true
+  }
+];
+
+// Componente para renderizar una card de precio individual
+const PricingCard = ({ plan, onSelectPlan }: { plan: typeof pricingPlans[0], onSelectPlan: (name: string, price: string) => void }) => {
+  const IconComponent = plan.icon;
+  
+  return (
+    <div className="relative animate-scale-in" style={{ animationDelay: plan.animationDelay }}>
+      {/* Efectos de fondo para planes destacados */}
+      {plan.isHighlighted && (
+        <div className={`absolute -inset-1 rounded-2xl opacity-75 blur-xl ${
+          plan.isPopular 
+            ? "bg-gradient-to-r from-primary to-secondary animate-glow-pulse" 
+            : "bg-gradient-to-br from-primary via-secondary to-primary opacity-60 blur-2xl"
+        }`}></div>
+      )}
+      
+      <div className={`relative h-full bg-card backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300 hover:border-primary/30 hover:shadow-lg ${
+        plan.isHighlighted 
+          ? `border-2 border-primary shadow-2xl ${plan.isPopular ? 'transform lg:scale-105' : 'hover:border-primary hover:shadow-2xl'}`
+          : 'border-border'
+      }`}>
+        <div className="mb-5">
+          {/* Badge */}
+          {plan.badge && (
+            <div className="inline-block px-4 py-1 bg-muted rounded-full text-sm text-muted-foreground mb-4">
+              {plan.badge}
+            </div>
+          )}
+          
+          {/* Título */}
+          <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
+            {IconComponent ? (
+              <IconComponent className="w-6 h-6 text-primary" />
+            ) : (
+              <span className="text-2xl">{plan.iconEmoji}</span>
+            )}
+            {plan.name}
+          </h3>
+          
+          {/* Descripción */}
+          <p className="text-sm text-muted-foreground mb-3 italic">
+            {plan.description}
+          </p>
+          
+          {/* Precio */}
+          <div className="flex items-baseline gap-2">
+            <span className={`text-4xl font-bold ${
+              plan.isHighlighted 
+                ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                : "text-foreground"
+            }`}>
+              {plan.price}
+            </span>
+            <span className="text-sm text-muted-foreground">{plan.period}</span>
+          </div>
+        </div>
+
+        {/* Canales */}
+        <div className={`mb-4 p-3 rounded-xl ${
+          plan.isHighlighted 
+            ? "bg-primary/10 border border-primary/30"
+            : "bg-muted/30"
+        }`}>
+          <div className={`text-sm font-medium ${
+            plan.isHighlighted ? "text-foreground font-semibold" : "text-muted-foreground"
+          }`}>
+            Canales: {plan.channels}
+          </div>
+          {plan.isHighlighted && (
+            <div className="text-sm text-muted-foreground">Todo lo anterior +</div>
+          )}
+        </div>
+
+        {/* Características */}
+        <div className="space-y-3 mb-6">
+          {plan.features.map((feature, index) => (
+            <div key={index} className={`flex items-start gap-2 ${
+              !feature.included ? "opacity-50" : ""
+            }`}>
+              {feature.included ? (
+                feature.emoji ? (
+                  <span className="text-base flex-shrink-0">{feature.emoji}</span>
+                ) : (
+                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                )
+              ) : null}
+              <span className={`text-sm ${
+                feature.included 
+                  ? feature.highlighted 
+                    ? "text-foreground font-semibold" 
+                    : "text-foreground"
+                  : "text-muted-foreground line-through"
+              }`}>
+                {feature.text}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Botón y costo de configuración */}
+        <div className="space-y-3">
+          <Button 
+            variant={plan.buttonVariant}
+            className={`w-full h-12 text-base rounded-xl ${
+              plan.isHighlighted 
+                ? "bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105"
+                : "h-11"
+            } ${plan.isPremium ? "animate-glow-pulse" : ""}`}
+            onClick={() => onSelectPlan(plan.name, `${plan.price} ${plan.period}`)}
+          >
+            {plan.buttonText}
+          </Button>
+          <div className={`text-center text-xs ${
+            plan.isPremium ? "text-primary font-medium" : "text-muted-foreground"
+          }`}>
+            💡 Configuración inicial: {plan.setupCost}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const PricingSection = () => {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
@@ -11,8 +207,13 @@ const PricingSection = () => {
     setSelectedPlan({ name, price });
     setCheckoutOpen(true);
   };
+
+  const handleDemoClick = () => {
+    window.location.href = "https://www.hubu.com.co/?modal=true";
+  };
+
   return (
-    <section className="min-h-screen bg-background py-20 px-4 sm:px-6 lg:px-8">
+    <section className="min-h-screen bg-background py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* BLOQUE 1 - INTRODUCCIÓN */}
         <div className="text-center mb-16 animate-fade-in-up">
@@ -29,190 +230,13 @@ const PricingSection = () => {
 
         {/* BLOQUE 3 - PLANES */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-20 max-w-7xl mx-auto">
-          {/* Plan Básico */}
-          <div className="relative animate-scale-in" style={{ animationDelay: "0.2s" }}>
-            <div className="h-full bg-card backdrop-blur-sm rounded-2xl p-6 border border-border transition-all duration-300 hover:border-primary/30 hover:shadow-lg">
-              <div className="mb-5">
-                <div className="inline-block px-4 py-1 bg-muted rounded-full text-sm text-muted-foreground mb-4">
-                  Ideal para negocios pequeños
-                </div>
-                <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-                  <MessageCircle className="w-6 h-6 text-primary" />
-                  Plan Básico
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3 italic">
-                  Empieza a automatizar sin complicaciones.
-                </p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold text-foreground">$50</span>
-                  <span className="text-sm text-muted-foreground">USD/mes</span>
-                </div>
-              </div>
-
-              <div className="mb-3 p-3 bg-muted/30 rounded-lg">
-                <div className="text-sm text-muted-foreground font-medium">Canales: WhatsApp</div>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground">Respuestas automáticas 24/7</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground">Info de productos y servicios</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground">Promociones, horarios y ubicación</span>
-                </div>
-                <div className="flex items-start gap-2 opacity-50">
-                  <span className="text-sm text-muted-foreground line-through">Agendamiento</span>
-                </div>
-                <div className="flex items-start gap-2 opacity-50">
-                  <span className="text-sm text-muted-foreground line-through">Recordatorios</span>
-                </div>
-                <div className="flex items-start gap-2 opacity-50">
-                  <span className="text-sm text-muted-foreground line-through">Llamadas</span>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Button 
-                  variant="outline" 
-                  className="w-full h-11 text-base rounded-xl"
-                  onClick={() => openCheckout("Plan Básico", "$50 USD/mes")}
-                >
-                  Activar Plan Básico
-                </Button>
-                <div className="text-center text-xs text-muted-foreground">
-                  💡 Configuración inicial: $100 USD (único, sin costos ocultos)
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Plan Completo - DESTACADO */}
-          <div className="relative animate-scale-in" style={{ animationDelay: "0.3s" }}>
-            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl opacity-75 blur-xl animate-glow-pulse"></div>
-            <div className="relative h-full bg-card backdrop-blur-sm rounded-2xl p-6 border-2 border-primary shadow-2xl transform lg:scale-105">
-...
-              <div className="mb-5 mt-4">
-                <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-                  <Phone className="w-6 h-6 text-primary" />
-                  Plan Completo
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3 italic">
-                  Tu asistente 24/7 que nunca deja un cliente sin respuesta.
-                </p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">$155</span>
-                  <span className="text-sm text-muted-foreground">USD/mes</span>
-                </div>
-              </div>
-
-              <div className="mb-4 p-3 bg-primary/10 rounded-xl border border-primary/30">
-                <div className="text-sm text-foreground font-semibold mb-2">Canales: WhatsApp + Llamadas</div>
-                <div className="text-sm text-muted-foreground">Todo lo anterior +</div>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground font-semibold">Agendamiento automático</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground font-semibold">Recordatorios automáticos</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground font-semibold">Agente de voz (300 min incluidos)</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground">Integración con tus sistemas</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <Check className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
-                  <span className="text-sm text-foreground">Soporte prioritario</span>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Button 
-                  className="w-full h-12 text-base rounded-xl bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105"
-                  onClick={() => openCheckout("Plan Completo", "$155 USD/mes")}
-                >
-                  Quiero el Plan Completo ⚡
-                </Button>
-                <div className="text-center text-xs text-muted-foreground">
-                  💡 Configuración inicial: $100 USD (único, sin costos ocultos)
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Plan Avanzado - ANCLA PREMIUM */}
-          <div className="relative animate-scale-in" style={{ animationDelay: "0.4s" }}>
-            <div className="absolute -inset-1 bg-gradient-to-br from-primary via-secondary to-primary rounded-2xl opacity-60 blur-2xl"></div>
-            <div className="relative h-full bg-card backdrop-blur-sm rounded-2xl p-6 border-2 border-primary/50 shadow-xl transition-all duration-300 hover:border-primary hover:shadow-2xl">
-...
-              <div className="mb-5 mt-4">
-                <h3 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
-                  <span className="text-2xl">🔮</span>
-                  Plan Avanzado
-                </h3>
-                <p className="text-sm text-muted-foreground mb-3 italic">
-                  Haz que tus datos trabajen por ti.
-                </p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-bold bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent">$350</span>
-                  <span className="text-sm text-muted-foreground">USD/mes</span>
-                </div>
-              </div>
-
-              <div className="mb-4 p-3 bg-gradient-to-r from-primary/10 to-secondary/10 rounded-xl border border-primary/40">
-                <div className="text-sm text-foreground font-semibold mb-2">Canales: WhatsApp + Llamadas + Voz + Panel de datos</div>
-                <div className="text-sm text-muted-foreground">Todo lo anterior +</div>
-              </div>
-
-              <div className="space-y-3 mb-6">
-                <div className="flex items-start gap-2">
-                  <span className="text-base flex-shrink-0">🔗</span>
-                  <span className="text-sm text-foreground font-semibold">Integración de sistemas y clientes</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-base flex-shrink-0">🧹</span>
-                  <span className="text-sm text-foreground font-semibold">Limpieza y organización automática de datos</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-base flex-shrink-0">📊</span>
-                  <span className="text-sm text-foreground font-semibold">Segmentación y predicción con IA</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-base flex-shrink-0">💬</span>
-                  <span className="text-sm text-foreground font-semibold">Campañas automáticas y personalizadas</span>
-                </div>
-                <div className="flex items-start gap-2">
-                  <span className="text-base flex-shrink-0">🎧</span>
-                  <span className="text-sm text-foreground font-semibold">750 min de voz al mes + soporte 1:1</span>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <Button 
-                  className="w-full h-12 text-base rounded-xl bg-gradient-to-r from-primary via-secondary to-primary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105 animate-glow-pulse"
-                  onClick={() => openCheckout("Plan Avanzado", "$350 USD/mes")}
-                >
-                  Quiero el Plan Avanzado 💎
-                </Button>
-                <div className="text-center text-xs text-primary font-medium">
-                  💎 Configuración inicial: incluida (valor $100 USD)
-                </div>
-              </div>
-            </div>
-          </div>
+          {pricingPlans.map((plan) => (
+            <PricingCard 
+              key={plan.id} 
+              plan={plan} 
+              onSelectPlan={openCheckout} 
+            />
+          ))}
         </div>
 
         {/* BLOQUE 4 - TESTIMONIO Y REASEGURO */}
@@ -220,7 +244,10 @@ const PricingSection = () => {
           <div className="bg-muted/30 backdrop-blur-sm rounded-2xl p-8 border border-border max-w-4xl mx-auto">
             <div className="text-center space-y-4">
               <div className="text-xl text-foreground font-medium">
-                💬 "El 80% de nuestras clínicas eligen el Plan Completo por su integración total."
+                <span className="flex justify-center items-center gap-2">
+                  <Sparkles className="w-6 h-6 text-primary" />
+                  El 80% de nuestras clínicas eligen el <strong>plan completo</strong> por su integración total.
+                </span>
               </div>
               <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
                 <span>✓ Sin permanencia mínima</span>
@@ -238,8 +265,9 @@ const PricingSection = () => {
           <Button 
             size="lg" 
             className="h-14 px-12 text-base rounded-2xl bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105"
+            onClick={handleDemoClick}
           >
-            Agenda una demostración y prueba tu agente en vivo
+           AGENDA UNA DEMOSTRACIÓN EN VIVO
           </Button>
           <p className="mt-4 text-sm text-muted-foreground">
           Sin compromiso. Configuración en menos de 48h.
