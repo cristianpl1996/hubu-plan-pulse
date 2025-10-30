@@ -230,13 +230,21 @@ const PricingSection = () => {
 
   // Carga dinámica desde Supabase REST
   useEffect(() => {
+    if (!activeUrlId) {
+      // Si no hay id en la URL, mostramos error
+      setError("No se encontró un identificador en la URL");
+      setLoading(false);
+      return () => {}; // función de limpieza vacía
+    }
+
     const controller = new AbortController();
     const fetchPlans = async () => {
       setLoading(true);
       setError(null);
       try {
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyAgCiAgICAicm9sZSI6ICJhbm9uIiwKICAgICJpc3MiOiAic3VwYWJhc2UtZGVtbyIsCiAgICAiaWF0IjogMTY0MTc2OTIwMCwKICAgICJleHAiOiAxNzk5NTM1NjAwCn0.dc_X5iR_VP_qT0zsiyj_I_OZ2T9FtRU2BBNWN8Bu4GE";
-        const url = "https://supabase.bettercode.com.co/rest/v1/pricing_plans?select=*";
+        // Construimos la URL con el filtro del id_url
+        const url = `https://supabase.bettercode.com.co/rest/v1/pricing_plans?plan->>id_url=eq.${activeUrlId}`;
         const res = await fetch(url, {
           method: "GET",
           headers: {
@@ -331,15 +339,12 @@ const PricingSection = () => {
     };
     fetchPlans();
     return () => controller.abort();
-  }, []);
+  }, [activeUrlId]);
 
   const plansToRender = useMemo(() => {
-    if (!activeUrlId || !plans) return null; // id obligatorio y datos cargados
-    const filtered = plans.filter((p) => {
-      const planId = String((p.id_url ?? "")).toLowerCase();
-      return planId && planId === activeUrlId;
-    });
-    if (filtered.length === 0) return null;
+    if (!plans) return null; // datos cargados
+    if (plans.length === 0) return null;
+    // Ya no necesitamos filtrar porque el endpoint lo hace
     const parsePriceToNumber = (price: string): number => {
       // Extrae dígitos, puntos y comas, luego normaliza a número
       const cleaned = price
@@ -351,9 +356,9 @@ const PricingSection = () => {
       const n = parseFloat(normalized);
       return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
     };
-    const sorted = [...filtered].sort((a, b) => parsePriceToNumber(a.price) - parsePriceToNumber(b.price));
+    const sorted = [...plans].sort((a, b) => parsePriceToNumber(a.price) - parsePriceToNumber(b.price));
     return sorted;
-  }, [activeUrlId, plans]);
+  }, [plans]);
 
   const openCheckout = (name: string, price: string) => {
     setSelectedPlan({ name, price });
@@ -431,8 +436,8 @@ const PricingSection = () => {
           <div className="bg-muted/30 backdrop-blur-sm rounded-2xl p-8 border border-border max-w-4xl mx-auto">
             <div className="text-center space-y-4">
               <div className="text-xl text-foreground font-medium">
-                <span className="flex justify-center items-center gap-2">
-                  <Sparkles className="w-6 h-6 text-primary" />
+                <span className="inline md:flex justify-center items-center gap-2">
+                  <Sparkles className="w-6 h-6 text-primary hidden md:inline" />
                   El 80% de nuestras clínicas eligen el{" "}
                   <strong>plan completo</strong> por su integración total.
                 </span>
@@ -458,7 +463,7 @@ const PricingSection = () => {
             className="h-14 px-12 text-base rounded-2xl bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_40px_hsl(var(--primary)/0.6)] transition-all duration-300 hover:scale-105"
             onClick={handleDemoClick}
           >
-            AGENDA UNA DEMOSTRACIÓN EN VIVO
+            AGENDA UNA DEMOSTRACIÓN <span className="hidden md:inline">EN VIVO</span>
           </Button>
           <p className="mt-4 text-sm text-muted-foreground">
             Configuración en menos de 48h.

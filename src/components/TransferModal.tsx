@@ -50,7 +50,7 @@ export function TransferModal({
     accountType: "Cuenta de ahorros",
     accountNumber: "270-000012-12",
     holder: "CRISTIAN PATIÑO - OSYVA SAS",
-    nit: "1088.334.538",
+    nit: "1.088.334.538",
   };
 
   return (
@@ -192,7 +192,7 @@ export function TransferModal({
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-xs text-muted-foreground uppercase tracking-wide">
-                        NIT
+                        C.C.
                       </p>
                       <p className="text-white font-mono font-semibold">
                         {bankInfo.nit}
