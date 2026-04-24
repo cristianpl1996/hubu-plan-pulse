@@ -15,6 +15,8 @@ import {
   Download,
   ChevronDown,
   RotateCw,
+  KeyRound,
+  QrCode,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -56,6 +58,7 @@ export function TransferModal({
     accountNumber: "11500004967",
     holder: "OSYVA INC SAS",
     nit: "901.400.277",
+    brebKey: "0054864939",
   };
 
   return (
@@ -90,7 +93,11 @@ export function TransferModal({
 
               onClick={() => setCardFlipped(!cardFlipped)}
             >
-              <RotateCw className={`h-4 w-4 transition-transform duration-700 ${cardFlipped ? 'rotate-[360deg]' : ''}`} />
+              {cardFlipped ? (
+                <RotateCw className={`h-4 w-4 transition-transform duration-700 rotate-[360deg]`} />
+              ) : (
+                <QrCode className="h-4 w-4" />
+              )}
               <span className="whitespace-nowrap font-medium">{cardFlipped ? 'Ver datos de la cuenta' : 'Ver QR Bre-B'}</span>
             </button>
 
@@ -128,6 +135,35 @@ export function TransferModal({
                         }
                       >
                         {copiedField === "account" ? (
+                          <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" />
+                        ) : (
+                          <Copy className="h-4 w-4 sm:h-5 sm:w-5 text-[#C64EFF]" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Llave Bre-B — DESTACADA (mismo estilo que Número de Cuenta) */}
+                  <div className="bg-gradient-to-r from-[#C64EFF]/5 to-[#9b87f5]/5 rounded-xl p-3 sm:p-4 border border-[#C64EFF]/30">
+                    <div className="flex items-center justify-between">
+                      <div className="min-w-0 flex-1 pr-2">
+                        <p className="text-[10px] sm:text-xs text-[#C64EFF] uppercase tracking-widest font-medium mb-1 flex items-center gap-1.5">
+                          <KeyRound className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                          Llave Bre-B
+                        </p>
+                        <p className="text-white font-bold text-lg sm:text-xl font-mono tracking-wider">
+                          {bankInfo.brebKey}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="h-9 w-9 sm:h-10 sm:w-10 p-0 hover:bg-[#C64EFF]/20 border border-[#C64EFF]/20 rounded-lg flex-shrink-0"
+                        onClick={() =>
+                          copyToClipboard(bankInfo.brebKey, "brebKey")
+                        }
+                      >
+                        {copiedField === "brebKey" ? (
                           <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 text-green-400" />
                         ) : (
                           <Copy className="h-4 w-4 sm:h-5 sm:w-5 text-[#C64EFF]" />
@@ -246,29 +282,34 @@ export function TransferModal({
                 </div>
               </div>
 
-              {/* BACK — Imagen del certificado */}
+              {/* BACK — QR Bre-B */}
               <div
-                className="absolute inset-0 bg-gradient-to-br from-[#0E0E10] to-[#1a1a1f] rounded-2xl border border-[#C64EFF]/20 shadow-2xl overflow-hidden"
+                className="absolute inset-0 bg-gradient-to-br from-[#0E0E10] to-[#1a1a1f] rounded-2xl border border-[#C64EFF]/20 shadow-2xl overflow-hidden flex flex-col items-center justify-center"
                 style={{
                   backfaceVisibility: 'hidden',
                   transform: 'rotateY(180deg)',
                 }}
               >
-                <img
-                  src="https://api.foneia.com/media/resources/images/bank_details.png"
-                  alt="Certificado bancario Osyva SAS"
-                  className="w-full h-full object-contain rounded-2xl"
-                  style={{ marginTop: "10px" }}
-                />
+                <div className="flex flex-col items-center gap-3 p-4 sm:p-5" style={{ marginTop: "20px" }}>
+                  <div className="flex items-center gap-2">
+                    <QrCode className="h-5 w-5 text-[#C64EFF]" />
+                    <h3 className="text-sm sm:text-base font-bold text-white">QR Bre-B Bancolombia</h3>
+                  </div>
+                  <img
+                    src="https://api.foneia.com/media/resources/images/bank_details.png"
+                    alt="QR Bre-B Bancolombia"
+                    className="w-full max-h-[280px] object-contain rounded-xl"
+                  />
+                </div>
               </div>
             </div>
           </div>
 
           {/* Documentos de soporte */}
-          <div className="flex flex-col gap-2">
+          <div className="grid grid-cols-2 gap-2">
             <Button
               variant="outline"
-              className="w-full h-10 text-xs sm:text-sm font-medium border-[#C64EFF]/30 bg-[#C64EFF]/5 hover:bg-[#C64EFF]/15 text-white transition-all duration-300"
+              className="w-full h-10 text-[10px] sm:text-xs font-medium border-[#C64EFF]/30 bg-[#C64EFF]/5 hover:bg-[#C64EFF]/15 text-white transition-all duration-300"
               onClick={() =>
                 window.open(
                   "https://api.foneia.com/media/resources/images/Certificado_Cuenta_Corriente_Osyva_SAS.pdf",
@@ -276,14 +317,14 @@ export function TransferModal({
                 )
               }
             >
-              <div className="flex items-center gap-2">
-                <Download className="h-3.5 w-3.5 text-[#C64EFF] flex-shrink-0" />
-                <span className="truncate">Certificado Cuenta Corriente Osyva SAS</span>
+              <div className="flex items-center gap-1.5">
+                <Download className="h-3 w-3 text-[#C64EFF] flex-shrink-0" />
+                <span className="truncate text-[14px]">Certificado Bancario</span>
               </div>
             </Button>
             <Button
               variant="outline"
-              className="w-full h-10 text-xs sm:text-sm font-medium border-[#C64EFF]/30 bg-[#C64EFF]/5 hover:bg-[#C64EFF]/15 text-white transition-all duration-300"
+              className="w-full h-10 text-[14px] sm:text-xs font-medium border-[#C64EFF]/30 bg-[#C64EFF]/5 hover:bg-[#C64EFF]/15 text-white transition-all duration-300"
               onClick={() =>
                 window.open(
                   "https://api.foneia.com/media/resources/images/Bre-B_Cuenta_Corriente_Osyva_SAS.pdf",
@@ -291,9 +332,9 @@ export function TransferModal({
                 )
               }
             >
-              <div className="flex items-center gap-2">
-                <Download className="h-3.5 w-3.5 text-[#C64EFF] flex-shrink-0" />
-                <span className="truncate">Bre-B Cuenta Corriente Osyva SAS</span>
+              <div className="flex items-center gap-1.5">
+                <Download className="h-3 w-3 text-[#C64EFF] flex-shrink-0" />
+                <span className="truncate text-[14px]">Certificado Bre-B</span>
               </div>
             </Button>
           </div>
