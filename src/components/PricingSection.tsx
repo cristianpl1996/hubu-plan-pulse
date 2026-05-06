@@ -2,6 +2,7 @@ import { Check, Sparkles, Phone, MessageCircle, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useMemo, useState, type ComponentType } from "react";
 import { CheckoutModal } from "./CheckoutModal";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Tipos para planes cargados dinámicamente desde Supabase
 type PricingFeature = {
@@ -11,13 +12,99 @@ type PricingFeature = {
   emoji?: string;
 };
 
+const BILLING_PERIODS = ["mensual", "trimestral", "semestral", "anual"] as const;
+
+type BillingPeriod = (typeof BILLING_PERIODS)[number];
+
+const BILLING_PERIOD_LABELS: Record<BillingPeriod, string> = {
+  mensual: "MENSUAL",
+  trimestral: "TRIMESTRAL",
+  semestral: "SEMESTRAL",
+  anual: "ANUAL",
+};
+
+const PRICE_PERIOD_LABELS: Record<BillingPeriod, string> = {
+  mensual: "COP/mes",
+  trimestral: "COP/trimestre",
+  semestral: "COP/semestre",
+  anual: "COP/año",
+};
+
+const isBillingPeriod = (value: unknown): value is BillingPeriod =>
+  typeof value === "string" && BILLING_PERIODS.includes(value as BillingPeriod);
+
+const normalizeBillingPeriod = (value: unknown): BillingPeriod => {
+  if (isBillingPeriod(value)) return value;
+  if (typeof value !== "string") return "mensual";
+
+  const normalizedValue = value.trim().toLowerCase();
+  if (normalizedValue === "año" || normalizedValue === "ano") return "anual";
+  if (isBillingPeriod(normalizedValue)) return normalizedValue;
+
+  return "mensual";
+};
+
+const resolveBillingPeriod = (planObj: Record<string, unknown>): BillingPeriod => {
+  const candidateKeys = [
+    "billingPeriod",
+    "billing_period",
+    "planPeriod",
+    "plan_period",
+    "frequency",
+    "periodo",
+    "period",
+  ] as const;
+
+  for (const key of candidateKeys) {
+    const candidate = planObj[key];
+    const normalized = normalizedBillingCandidate(candidate);
+    if (normalized) {
+      return normalized;
+    }
+  }
+
+  return "mensual";
+};
+
+const normalizedBillingCandidate = (value: unknown): BillingPeriod | null => {
+  if (typeof value !== "string") return null;
+
+  const normalizedValue = value.trim().toLowerCase();
+  if (normalizedValue === "año" || normalizedValue === "ano") return "anual";
+  if (isBillingPeriod(normalizedValue)) return normalizedValue;
+
+  return null;
+};
+
+const resolvePricePeriodLabel = (
+  planObj: Record<string, unknown>,
+  billingPeriod: BillingPeriod,
+): string => {
+  const candidateKeys = ["pricePeriodLabel", "periodLabel", "period_text", "periodText"] as const;
+
+  for (const key of candidateKeys) {
+    const candidate = planObj[key];
+    if (typeof candidate === "string" && candidate.trim() !== "") {
+      return candidate;
+    }
+  }
+
+  const rawPeriod = planObj.period;
+  if (typeof rawPeriod === "string" && rawPeriod.trim() !== "" && !normalizedBillingCandidate(rawPeriod)) {
+    return rawPeriod;
+  }
+
+  return PRICE_PERIOD_LABELS[billingPeriod];
+};
+
 type PricingPlan = {
   id: string;
   id_url?: string | number | null;
   name: string;
   description?: string;
   price: string; // El API devuelve texto o número; lo normalizamos a string
-  period?: string;
+  billingPeriod: BillingPeriod;
+  pricePeriodLabel: string;
   icon?: ComponentType<{ className?: string }> | null; // opcional; mapeamos si existe
   iconEmoji?: string;
   badge?: string;
@@ -50,24 +137,21 @@ const PricingCard = ({
       {/* Efectos de fondo para planes destacados */}
       {plan.isHighlighted && (
         <div
-          className={`absolute -inset-1 rounded-2xl opacity-75 blur-xl ${
-            plan.isPopular
-              ? "bg-gradient-to-r from-primary to-secondary animate-glow-pulse"
-              : "bg-gradient-to-br from-primary via-secondary to-primary opacity-60 blur-2xl"
-          }`}
+          className={`absolute -inset-1 rounded-2xl opacity-75 blur-xl ${plan.isPopular
+            ? "bg-gradient-to-r from-primary to-secondary animate-glow-pulse"
+            : "bg-gradient-to-br from-primary via-secondary to-primary opacity-60 blur-2xl"
+            }`}
         ></div>
       )}
 
       <div
-        className={`relative h-full bg-card backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300 hover:border-primary/30 hover:shadow-lg ${
-          plan.isHighlighted
-            ? `border-2 border-primary shadow-2xl ${
-                plan.isPopular
-                  ? "transform lg:scale-105"
-                  : "hover:border-primary hover:shadow-2xl"
-              }`
-            : "border-border"
-        }`}
+        className={`relative h-full bg-card backdrop-blur-sm rounded-2xl p-6 border transition-all duration-300 hover:border-primary/30 hover:shadow-lg ${plan.isHighlighted
+          ? `border-2 border-primary shadow-2xl ${plan.isPopular
+            ? "transform lg:scale-105"
+            : "hover:border-primary hover:shadow-2xl"
+          }`
+          : "border-border"
+          }`}
       >
         <div className="mb-5">
           {/* Badge */}
@@ -95,32 +179,29 @@ const PricingCard = ({
           {/* Precio */}
           <div className="flex items-baseline gap-2">
             <span
-              className={`text-4xl font-bold ${
-                plan.isHighlighted
-                  ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
-                  : "text-foreground"
-              }`}
+              className={`text-4xl font-bold ${plan.isHighlighted
+                ? "bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent"
+                : "text-foreground"
+                }`}
             >
               {plan.price}
             </span>
-            <span className="text-sm text-muted-foreground">{plan.period}</span>
+            <span className="text-sm text-muted-foreground">{plan.pricePeriodLabel}</span>
           </div>
         </div>
 
         {/* Canales */}
         <div
-          className={`mb-4 p-3 rounded-xl ${
-            plan.isHighlighted
-              ? "bg-primary/10 border border-primary/30"
-              : "bg-muted/30"
-          }`}
+          className={`mb-4 p-3 rounded-xl ${plan.isHighlighted
+            ? "bg-primary/10 border border-primary/30"
+            : "bg-muted/30"
+            }`}
         >
           <div
-            className={`text-sm font-medium ${
-              plan.isHighlighted
-                ? "text-foreground font-semibold"
-                : "text-muted-foreground"
-            }`}
+            className={`text-sm font-medium ${plan.isHighlighted
+              ? "text-foreground font-semibold"
+              : "text-muted-foreground"
+              }`}
           >
             Canales: {plan.channels}
           </div>
@@ -136,9 +217,8 @@ const PricingCard = ({
           {plan.features.map((feature, index) => (
             <div
               key={index}
-              className={`flex items-start gap-2 ${
-                !feature.included ? "opacity-50" : ""
-              }`}
+              className={`flex items-start gap-2 ${!feature.included ? "opacity-50" : ""
+                }`}
             >
               {feature.included ? (
                 feature.emoji ? (
@@ -150,13 +230,12 @@ const PricingCard = ({
                 )
               ) : null}
               <span
-                className={`text-sm ${
-                  feature.included
-                    ? feature.highlighted
-                      ? "text-foreground font-semibold"
-                      : "text-foreground"
-                    : "text-muted-foreground line-through"
-                }`}
+                className={`text-sm ${feature.included
+                  ? feature.highlighted
+                    ? "text-foreground font-semibold"
+                    : "text-foreground"
+                  : "text-muted-foreground line-through"
+                  }`}
               >
                 {feature.text}
               </span>
@@ -168,23 +247,21 @@ const PricingCard = ({
         <div className="space-y-3">
           <Button
             variant={plan.buttonVariant}
-            className={`w-full h-12 text-base rounded-xl ${
-              plan.isHighlighted
-                ? "bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105"
-                : "h-11"
-            } ${plan.isPremium ? "animate-glow-pulse" : ""}`}
+            className={`w-full h-12 text-base rounded-xl ${plan.isHighlighted
+              ? "bg-gradient-to-r from-primary to-secondary hover:shadow-[0_0_30px_hsl(var(--primary)/0.5)] transition-all duration-300 hover:scale-105"
+              : "h-11"
+              } ${plan.isPremium ? "animate-glow-pulse" : ""}`}
             onClick={() =>
-              onSelectPlan(plan.name, `${plan.price} ${plan.period}`)
+              onSelectPlan(plan.name, `${plan.price} ${plan.pricePeriodLabel}`)
             }
           >
             {plan.buttonText}
           </Button>
           <div
-            className={`text-center text-xs ${
-              plan.isPremium
-                ? "text-primary font-medium"
-                : "text-muted-foreground"
-            }`}
+            className={`text-center text-xs ${plan.isPremium
+              ? "text-primary font-medium"
+              : "text-muted-foreground"
+              }`}
           >
             💡 Configuración inicial: {plan.setupCost}
           </div>
@@ -199,6 +276,7 @@ const PricingSection = () => {
   const [selectedPlan, setSelectedPlan] = useState({ name: "", price: "" });
   const [activeUrlId, setActiveUrlId] = useState<string | null>(null);
   const [plans, setPlans] = useState<PricingPlan[] | null>(null);
+  const [selectedBillingPeriod, setSelectedBillingPeriod] = useState<BillingPeriod>("mensual");
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -234,7 +312,7 @@ const PricingSection = () => {
       // Si no hay id en la URL, mostramos error
       setError("No se encontró un identificador en la URL");
       setLoading(false);
-      return () => {}; // función de limpieza vacía
+      return () => { }; // función de limpieza vacía
     }
 
     const controller = new AbortController();
@@ -264,13 +342,13 @@ const PricingSection = () => {
           const planObj: Record<string, unknown> =
             typeof rawPlan === "string"
               ? (() => {
-                  try {
-                    const parsed = JSON.parse(rawPlan);
-                    return typeof parsed === "object" && parsed !== null ? (parsed as Record<string, unknown>) : {};
-                  } catch {
-                    return {};
-                  }
-                })()
+                try {
+                  const parsed = JSON.parse(rawPlan);
+                  return typeof parsed === "object" && parsed !== null ? (parsed as Record<string, unknown>) : {};
+                } catch {
+                  return {};
+                }
+              })()
               : (rawPlan as Record<string, unknown>) || {};
 
           // Iconos
@@ -288,7 +366,7 @@ const PricingSection = () => {
           const features: PricingFeature[] = Array.isArray(rawFeatures)
             ? (rawFeatures as PricingFeature[])
             : typeof rawFeatures === "string"
-            ? (() => {
+              ? (() => {
                 try {
                   const parsed = JSON.parse(rawFeatures);
                   return Array.isArray(parsed) ? parsed : [];
@@ -296,10 +374,12 @@ const PricingSection = () => {
                   return [];
                 }
               })()
-            : [];
+              : [];
 
           const priceValue = (planObj as { price?: unknown }).price;
           const price = typeof priceValue === "number" ? `$${priceValue}` : String(priceValue ?? "");
+          const billingPeriod = resolveBillingPeriod(planObj);
+          const pricePeriodLabel = resolvePricePeriodLabel(planObj, billingPeriod);
 
           const rawIdUrl = (planObj as { id_url?: unknown }).id_url;
           const id_url: string | number | null =
@@ -311,7 +391,8 @@ const PricingSection = () => {
             name: String((planObj as { name?: unknown }).name ?? ""),
             description: (planObj as { description?: unknown }).description as string | undefined,
             price,
-            period: (planObj as { period?: unknown }).period as string | undefined,
+            billingPeriod,
+            pricePeriodLabel,
             icon,
             iconEmoji,
             badge: (planObj as { badge?: unknown }).badge as string | undefined,
@@ -329,6 +410,7 @@ const PricingSection = () => {
           };
         });
         setPlans(mapped);
+        setSelectedBillingPeriod(mapped[0]?.billingPeriod ?? "mensual");
       } catch (e: unknown) {
         const message = e instanceof Error ? e.message : "No fue posible cargar los planes";
         setError(message);
@@ -343,7 +425,8 @@ const PricingSection = () => {
 
   const plansToRender = useMemo(() => {
     if (!plans) return null; // datos cargados
-    if (plans.length === 0) return null;
+    const filteredPlans = plans.filter((plan) => plan.billingPeriod === selectedBillingPeriod);
+    if (filteredPlans.length === 0) return null;
     // Ya no necesitamos filtrar porque el endpoint lo hace
     const parsePriceToNumber = (price: string): number => {
       // Extrae dígitos, puntos y comas, luego normaliza a número
@@ -356,8 +439,14 @@ const PricingSection = () => {
       const n = parseFloat(normalized);
       return Number.isFinite(n) ? n : Number.POSITIVE_INFINITY;
     };
-    const sorted = [...plans].sort((a, b) => parsePriceToNumber(a.price) - parsePriceToNumber(b.price));
+    const sorted = [...filteredPlans].sort((a, b) => parsePriceToNumber(a.price) - parsePriceToNumber(b.price));
     return sorted;
+  }, [plans, selectedBillingPeriod]);
+
+  const availableBillingPeriods = useMemo(() => {
+    if (!plans || plans.length === 0) return [];
+
+    return BILLING_PERIODS.filter((period) => plans.some((plan) => plan.billingPeriod === period));
   }, [plans]);
 
   const openCheckout = (name: string, price: string) => {
@@ -373,7 +462,7 @@ const PricingSection = () => {
     <section className="min-h-screen bg-background py-10 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* BLOQUE 1 - INTRODUCCIÓN */}
-        <div className="text-center mb-16 animate-fade-in-up">
+        <div className="text-center mb-12 animate-fade-in-up">
           <p className="text-sm text-muted-foreground mb-6">
             💡 Ahorra hasta <span className="font-semibold">87% mensual</span>{" "}
             frente a una recepcionista tradicional.
@@ -386,6 +475,27 @@ const PricingSection = () => {
             realiza tu pago seguro para comenzar.
           </p>
         </div>
+
+        {!loading && !error && availableBillingPeriods.length > 1 && (
+          <div className="flex justify-center mb-16 animate-fade-in-up">
+            <Tabs
+              value={selectedBillingPeriod}
+              onValueChange={(value) => setSelectedBillingPeriod(normalizeBillingPeriod(value))}
+            >
+              <TabsList className="h-auto flex-wrap gap-2 rounded-[20px] border border-primary/15 bg-[#11162A]/85 p-2 shadow-[0_18px_60px_rgba(0,0,0,0.35)] backdrop-blur-xl">
+                {availableBillingPeriods.map((period) => (
+                  <TabsTrigger
+                    key={period}
+                    value={period}
+                    className="min-w-[138px] rounded-2xl border border-transparent px-5 py-3 text-xs font-semibold tracking-[0.22em] text-white/68 transition-all duration-300 data-[state=active]:border-primary/50 data-[state=active]:bg-gradient-to-r data-[state=active]:from-primary/20 data-[state=active]:to-secondary/20 data-[state=active]:text-white data-[state=active]:shadow-[0_0_24px_hsl(var(--primary)/0.22)]"
+                  >
+                    {BILLING_PERIOD_LABELS[period]}
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </Tabs>
+          </div>
+        )}
 
         {/* BLOQUE 3 - PLANES / LOADING / NOT FOUND */}
         {loading ? (
