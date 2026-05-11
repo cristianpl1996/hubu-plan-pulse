@@ -464,15 +464,15 @@ const PricingSection = () => {
         {/* BLOQUE 1 - INTRODUCCIÓN */}
         <div className="text-center mb-12 animate-fade-in-up">
           <p className="text-sm text-muted-foreground mb-6">
-            💡 Ahorra hasta <span className="font-semibold">87% mensual</span>{" "}
-            frente a una recepcionista tradicional.
+            💡 Optimiza tu operación y presencia digital con soluciones
+            diseñadas para crecer.
           </p>
           <h2 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-foreground mb-6">
-            Elige tu agente inteligente
+            Elige la solución que tu negocio necesita
           </h2>
           <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl mx-auto">
-            Activa el plan que se adapta a tu clínica, petshop o guardería y
-            realiza tu pago seguro para comenzar.
+            Activa el plan ideal para automatización con IA, diseño web o
+            landing pages y realiza tu pago seguro para comenzar.
           </p>
         </div>
 
@@ -548,8 +548,8 @@ const PricingSection = () => {
               <div className="text-xl text-foreground font-medium">
                 <span className="inline md:flex justify-center items-center gap-2">
                   <Sparkles className="w-6 h-6 text-primary hidden md:inline" />
-                  El 80% de nuestras clínicas eligen el{" "}
-                  <strong>plan completo</strong> por su integración total.
+                  El 80% de nuestros clientes eligen el{" "}
+                  <strong>plan completo</strong> por su alcance integral.
                 </span>
               </div>
               <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
